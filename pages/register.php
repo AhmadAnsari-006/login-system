@@ -15,6 +15,7 @@
     echo "Confirm Password: " . $confirmPassword;
   }
 
+
   // CHECKS VALIDATION
   $errors = [];// conditions for various kind of errors 
   if(empty($fullName)){

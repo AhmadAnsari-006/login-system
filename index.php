@@ -2,6 +2,7 @@
   require 'includes/header.php';
 ?>
 
+
 <div class="container">
   <div class="card">
     <h1>Welcome to the PHP Login System</h1>
@@ -14,6 +15,7 @@
     </a>
   </div>
 </div>
+
 
 <?php
   require 'includes/footer.php';

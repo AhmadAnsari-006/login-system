@@ -17,9 +17,9 @@ form.addEventListener("submit", function(e){
     let valid = true;
 
     const fullName = document.getElementById("full_name").value.trim();
-    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirm_password").value;
+    const email = document.getElementById("email").value.trim();
 
     const emailRegex =
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
