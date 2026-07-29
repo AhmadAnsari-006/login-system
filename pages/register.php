@@ -1,12 +1,21 @@
 <?php //configure whether database file is there or not
   require '../config/database.php';
+
+  //RECIEVE FORM DATA
   if($_SERVER["REQUEST_METHOD"] == "POST"){//POST the user data to database
     $fullName = trim($_POST["full_name"]); //remove spaces a post full name
     $email = trim($_POST["email"]); //remove spaces a post email
     $password = $_POST["password"];
     $confirmPassword = $_POST["confirm_password"];
+
+    echo "<h2>Received Data</h2>";
+    echo "Full Name: " . $fullName . "<br>";
+    echo "Email: " . $email . "<br>";
+    echo "Password: " . $password . "<br>";
+    echo "Confirm Password: " . $confirmPassword;
   }
 
+  // CHECKS VALIDATION
   $errors = [];// conditions for various kind of errors 
   if(empty($fullName)){
     $errors[] = "Full name is required.";
@@ -23,13 +32,55 @@
   if($password !== $confirmPassword){
       $errors[] = "Passwords do not match.";
   }
+  
+  if(empty($errors)){
+    $sql = "SELECT * FROM users WHERE email = :email"; // :email is named placeholder for reference 
+    $stmt = $pdo->prepare($sql);//used to prevent sql injection/cyber threats 
+    // $stmt->bind_param("s", $email); // s means string as we are using for email 
+    $stmt->execute([
+      ':email' => $email 
+    ]);
+    
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+      $errors[] = "Email already exists.";
+    }
+  
+  }
 
-  //SQL Commands!! 
-  $sql = "SELECT id FROM users WHERE email = ?";
-  $stmt = $conn->prepare($sql); //used to prevent sql injection/cyber threats 
-  $stmt->bind_param("s", $email); // s means string as we are using for email 
-  $stmt->execute();
-  $result = $stmt->get_result();
+  if(empty($errors)){
+    $hashedPassword = password_hash(
+      $password, 
+      PASSWORD_DEFAULT
+    );
+    
+    $sql = "
+    INSERT INTO users
+    (full_name,email,password)
+    VALUES
+    (:full_name,:email,:password)";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+      ':full_name' => $fullName,
+      ':email' => $email,
+      ':password' => $hashedPassword
+    ]);
+    
+    echo "
+    <h2 style='color:green'>
+      Registration Successful ✅
+    </h2>";
+  }
+  
+  else{
+    echo "<ul>";
+    foreach ($errors as $error) {
+      echo "<li>$error</li>";
+    }
+    echo "</ul>";
+  }
+  /*$result = $stmt->get_result();
   
   if($result->num_rows > 0){ //check if email already exist or not 
     $errors[] = "Email already registered.";
@@ -52,7 +103,7 @@
     }else{
       $errors[] = "Something went wrong.";
     }
-  }
+  }*/
 ?>
 
 
