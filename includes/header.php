@@ -13,6 +13,7 @@
         <nav>
           <a href="/login-system/index.php">Home</a>
           <a href="/login-system/pages/register.php">Register</a>
+          <a href="/login-system/pages/login.php">Login</a>
         </nav>
     </div>
   </header>
